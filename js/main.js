@@ -1,5 +1,5 @@
 $(function () {
-  if ($('#sidebar').hasClass('auto_open') ) {
+  if ($('#sidebar').hasClass('auto_open')) {
     if ($(".sidebar-toc__content").children().length > 0) {
       $(".layout_post").animate({}, function () {
         {
@@ -81,8 +81,9 @@ $(function () {
   //-----------------------------------------------------------------------------------------------------
   // 首页fullpage添加
   // 添加class 
-  if (/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {} else {
-    $('.full_page').css('background-attachment', 'fixed')
+  if (/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) { } else {
+    $('.full_page').css('background-attachment', 'fixed');
+    $('#to_comment').css("display", "block")
   }
 
   //---------------------------------------------------------------------------------------------------------
@@ -215,15 +216,18 @@ $(function () {
   if (imgList.length === 0) {
     imgList = $("#post-content img").not('.no-fancybox');
   }
-  
+
   for (var i = 0; i < imgList.length; i++) {
+    var lazyload_src = imgList[i].src ? imgList[i].src : imgList.eq(i).attr("data-src")
+    
     var $a = $(
       '<a href="' +
-        imgList[i].src +
+      lazyload_src +
         '" data-fancybox="group" data-caption="' +
         imgList[i].alt +
         '" class="fancybox"></a>'
     )
+
     var alt = imgList[i].alt
     var $wrap = $(imgList[i]).wrap($a)
     if (alt) {
@@ -261,95 +265,44 @@ $(function () {
 
   });
 
-  //--------------------------------------------------------------------------------------------------------
-  //lazy懶加載
-  //把img的src删除，添加data-src,用于lozad.js
-  var $img = $("#post img");
-  $img.addClass("lozad");
-  $img.each(function () {
-    var src_link = $(this).attr("src");
-    $(this).attr("data-src", src_link);
-    $(this).removeAttr("src");
-  })
-
-  const observer = lozad(); // lazy loads elements with default selector as '.lozad'
-  observer.observe();
-
   //---------------------------------------------------------------------------------------------------------
   /** head点击*/
   $('.toggle-menu').on('click', function () {
-
     if ($(".toggle-menu").hasClass("open")) {
       $(".toggle-menu").removeClass("open").addClass("close");
-      $("#page-header #site-name,#page-header .search").css({'color':'#3b3a3a','text-shadow': 'none'})
-      $(".toggle-menu *").css({ 'background-color': '#3b3a3a', 'text-shadow': 'none' });
       $('body').addClass("is_hidden");
-      $('.menus').addClass("menu_open");
-      fixbg_menu();
-    } else {
-      $(".toggle-menu").removeClass("close").addClass("open");
-      $("#page-header #site-name,#page-header .search").css({ 'color': '', 'text-shadow': '' });
-      $(".toggle-menu *").css({ 'background-color': '', 'text-shadow': '' });
-      $('body').removeClass("is_hidden");
-      $('.menus').removeClass("menu_open").addClass('menu_close');
-      setTimeout(function () {
-        $('.menus').removeClass("menu_close")
-        
-      }, 300)
+      $('.menus').animate({
+        right: 0
+      }, 300 )
+      $('.menu_mask,.menus').css("display","block")
     }
   })
 
-  function fixbg_menu() {
-    const fixScroll = (scrollEl) => {
-      let startY
-      scrollEl.addEventListener('touchstart', function (event) {
-        // 如果多於1根手指點擊屏幕,則不處理
-        if (event.targetTouches.length > 1) {
-          return
-        }
-        // 儲存手指的初始位置
-        startY = event.targetTouches[0].clientY
-      }, false)
-      scrollEl.addEventListener('touchmove', function (event) {
-        if (event.targetTouches.length > 1) {
-          return
-        }
-        // 判斷手指滑動方向, y大於0時向下滑動, 小於0時向上滑動
-        const y = event.targetTouches[0].clientY - startY
-        // 如果到頂時繼續向下拉
-        if (scrollEl.scrollTop <= 0 && y > 0) {
-          // 重置滾動距離為最小值
-          scrollEl.scrollTop = 0
-          // 阻止滾動
-          event.preventDefault()
-        }
-        // 如果到底時繼續上滑  
-        const maxScrollTop = scrollEl.scrollHeight - scrollEl.clientHeight
-        if (maxScrollTop - scrollEl.scrollTop <= 0 && y < 0) {
-          scrollEl.scrollTop = maxScrollTop
-          event.preventDefault()
-        }
-      }, {
-          passive: false
-        })
+  $('.menu_mask ').on('click touchstart', function () {
+    $(".toggle-menu").removeClass("close").addClass("open");
+    $('body').removeClass("is_hidden");
+    $('.menus').animate({
+      right: -250
+    }, 300,function () {
+      {$('.menus').css({ 'display': ''})
     }
-    const scrollEl = document.querySelector(".menus");
-    fixScroll(scrollEl)
-  }
-
-  
+  })
+    $('.menu_mask').css("display","")
+  })
 
   $(window).on('resize', function (e) {
     if (!$('.toggle-menu').is(':visible')) {
       if ($(".toggle-menu").hasClass("close")) {
-      $(".toggle-menu").removeClass("close").addClass("open");
-      $("#page-header #site-name,#page-header .search").css({ 'color': '', 'text-shadow': '' });
-      $(".toggle-menu *").css({ 'background-color': '', 'text-shadow': '' });
-      $('body').removeClass("is_hidden");
-      $('.menus').removeClass("menu_open");
-    }     
+        $(".toggle-menu").removeClass("close").addClass("open");
+        $('body').removeClass("is_hidden");
+        $('.menus').animate({
+          right: -250
+        }, 300)
+        $('.menu_mask').css("display","")
+          }
     }
-  })
+  } )   
+
 
   //---------------------------------------------------------------------------------------------------------
   /** scroll 滚动 toc*/
@@ -367,13 +320,19 @@ $(function () {
     }
     var isUp = scrollDirection(currentTop)
 
-    if($(".toggle-menu").hasClass("open")){
+    if ($(".toggle-menu").hasClass("open")) {
       if (currentTop > 56) {
         
         if (isUp) {
           $('#page-header').hasClass('visible') ? $('#page-header').removeClass('visible') : console.log()
+          $('#post_bottom').removeClass('toc_mobile_show')
+          $('#toc_mobile').hasClass('is_visible') ? $('#toc_mobile').removeClass('is_visible') : console.log()
+
         } else {
           $('#page-header').hasClass('visible') ? console.log() : $('#page-header').addClass('visible')
+          $('#post_bottom').addClass('toc_mobile_show')
+          $('#toc_mobile').hasClass('is_visible') ? $('#toc_mobile').removeClass('is_visible') : console.log()
+
         }
         $('#page-header').addClass('fixed')
         if ($('#go-up').css('opacity') === '0') {
@@ -399,6 +358,8 @@ $(function () {
       } else {
         if (currentTop === 0) {
           $('#page-header').removeClass('fixed').removeClass('visible')
+          $('#post_bottom').removeClass('toc_mobile_show')
+
         }
 
         $('#go-up').animate({}, function () {
@@ -414,8 +375,19 @@ $(function () {
             'transform': 'translateX(0)'
           })
         })
+
       }
     }
+
+    if ( $(window).width() <= 768 &&  $('#post_bottom').hasClass('toc_mobile_show') ){
+      $('#rightside').css('bottom', '110px')
+      $('#go-up').css('bottom', '70px')
+  
+    } else {
+      $('#rightside').css('bottom', '60px')
+      $('#go-up').css('bottom', '20px')
+    }
+
   }, 50, 100))
 
   // go up smooth scroll
@@ -424,9 +396,9 @@ $(function () {
   })
 
   // head scroll
-  $('#post-content').find('h1,h2,h3,h4,h5,h6').on('click', function (e) {
-    scrollToHead('#' + $(this).attr('id'))
-  })
+  // $('#post-content').find('h1,h2,h3,h4,h5,h6').on('click', function (e) {
+  //   scrollToHead('#' + $(this).attr('id'))
+  // })
 
   // head scroll
   $('.toc-link').on('click', function (e) {
@@ -520,15 +492,14 @@ $(function () {
         .find('.toc-child').hide()
     }
 
-    if ($('.toc-link').hasClass('active')){
+    if ($('.toc-link').hasClass('active')) {
       var active_position = $(".active").offset().top;
       var sidebar_scrolltop = $("#sidebar").scrollTop();
-      if (active_position > (top + $(window).height() - 50)) {             
+      if (active_position > (top + $(window).height() - 50)) {
         $("#sidebar").scrollTop(sidebar_scrolltop + 100);
-      } else if (active_position < top + 50)
-      {
+      } else if (active_position < top + 50) {
         $("#sidebar").scrollTop(sidebar_scrolltop - 100);
-        }
+      }
     }
 
   }
@@ -545,14 +516,17 @@ $(function () {
   //閲讀模式
   $("#readmode").click(function () {
 
+
     if (Cookies.get("night-mode") == "night") {
       $('body').toggleClass('night-mode');
       $('body').toggleClass('read-mode');
-      $('#font_plus,#font_minus').toggleClass('is_visible');
+      $('#font_plus,#font_minus,#to_comment').toggleClass('is_visible');
+      $('#to_comment').toggleClass('is_invisible');
 
     } else {
       $('body').toggleClass('read-mode');
-      $('#font_plus,#font_minus').toggleClass('is_visible');
+      $('#font_plus,#font_minus,#to_comment').toggleClass('is_visible');
+      $('#to_comment').toggleClass('is_invisible');
     }
 
   });
@@ -561,11 +535,42 @@ $(function () {
   //閲讀模式下字體調整
   $("#font_plus").click(function () {
     var font_size_record = parseFloat($('body').css('font-size'))
+    var code_size_record = parseFloat($('pre').css('font-size'))
+    var code_size_record = parseFloat($('code').css('font-size'))
     $('body').css('font-size', font_size_record + 1)
+    $('pre').css('font-size', font_size_record + 1)
+    $('code').css('font-size', font_size_record + 1)
   });
 
   $("#font_minus").click(function () {
     var font_size_record = parseFloat($('body').css('font-size'))
+    var code_size_record = parseFloat($('pre').css('font-size'))
+    var code_size_record = parseFloat($('code').css('font-size'))
     $('body').css('font-size', font_size_record - 1)
+    $('pre').css('font-size', font_size_record - 1)
+    $('code').css('font-size', font_size_record - 1)
   });
+
+
+  $('#mobile_toc').on('click', function () {
+    $("#toc_mobile").toggleClass('is_visible')
+  })
+ 
+  //代碼框語言識別
+  $('figure').each(function () {   
+    var lang_name_index;
+    var lang_name;
+    lang_name_index = lang_name = $(this).attr('class').split(' ')[1];
+    if (lang_name_index == 'js')
+      lang_name = 'javascript'
+    if (lang_name_index == 'md')
+      lang_name = 'markdown'
+    if (lang_name_index == 'plain')
+      lang_name = 'code' 
+    if (lang_name_index == 'py')
+      lang_name = 'python'
+        
+    $('figure.' + lang_name_index + ' table').attr('data-content', lang_name);
+  })
+
 });

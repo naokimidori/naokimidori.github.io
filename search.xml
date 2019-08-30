@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2018/07/13/HelloWorld/"/>
+      <url>/2018/07/13/HelloWorld/</url>
+      
+        <content type="html"><![CDATA[<p>函数代码:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">faceClick(idx: number, word: string) &#123;</span><br><span class="line">let &#123; temList &#125; = this.state;</span><br><span class="line">temList[idx] = this.insertText(</span><br><span class="line">this.refs[`script-input-$&#123;idx&#125;`],</span><br><span class="line">`[$&#123;word&#125;]`</span><br><span class="line">);</span><br><span class="line">this.setState(&#123;</span><br><span class="line">temList: [...temList]</span><br><span class="line">&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">insertText(obj: any, str: string) &#123;</span><br><span class="line">if (document.selection) &#123;</span><br><span class="line">var sel = document.selection.createRange();</span><br><span class="line">sel.text = str;</span><br><span class="line">&#125; else if (</span><br><span class="line">typeof obj.selectionStart === &quot;number&quot; &amp;&amp;</span><br><span class="line">typeof obj.selectionEnd === &quot;number&quot;</span><br><span class="line">) &#123;</span><br><span class="line">var startPos = obj.selectionStart,</span><br><span class="line">endPos = obj.selectionEnd,</span><br><span class="line">cursorPos = startPos,</span><br><span class="line">tmpStr = obj.value;</span><br><span class="line">obj.value =</span><br><span class="line">tmpStr.substring(0, startPos) +</span><br><span class="line">str +</span><br><span class="line">tmpStr.substring(endPos, tmpStr.length);</span><br><span class="line">cursorPos += str.length;</span><br><span class="line">obj.selectionStart = obj.selectionEnd = cursorPos;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">obj.value += str;</span><br><span class="line">&#125;</span><br><span class="line">return obj.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>JSX</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">   &lt;input</span><br><span class="line">type=&quot;text&quot;</span><br><span class="line">className=&quot;tem-input&quot;</span><br><span class="line">value=&#123;item&#125;</span><br><span class="line">placeholder=&quot;请输入内容&quot;</span><br><span class="line">onChange=&#123;this.TemChange.bind(</span><br><span class="line">this,</span><br><span class="line">index</span><br><span class="line">)&#125;</span><br><span class="line">ref=&#123;`script-input-$&#123;index&#125;`&#125;</span><br><span class="line">/&gt;</span><br><span class="line">&lt;Face</span><br><span class="line">onClick=&#123;this.faceClick.bind(</span><br><span class="line">this,</span><br><span class="line">index</span><br><span class="line">)&#125;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Diary </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> PS3 </tag>
+            
+            <tag> Games </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
